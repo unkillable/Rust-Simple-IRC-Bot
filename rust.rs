@@ -21,7 +21,7 @@ fn main() {
 			socket.flush();
 			println!("Sent join packet");
 		}
-		if buffer.as_slice().contains("PING ") {
+		if buffer.contains("PING ") {
 			let mut hashbit = buffer.split_str("PING ");
 			for s in hashbit{
 				if s.contains(":") {
@@ -33,7 +33,7 @@ fn main() {
 				println!("{}", s);
 			}
 		}
-		if buffer.as_slice().contains(".j ") {
+		if buffer.contains(".j ") {
 			let mut chan = buffer.split_str(".j ");
 			for s in chan{
 				if s.contains("#"){
@@ -43,7 +43,7 @@ fn main() {
 				}
 			}
 		}
-		if buffer.as_slice().contains(".p ") {
+		if buffer.contains(".p ") {
 			let mut chan = buffer.split_str(".p ");
 			for s in chan{
 				if s.contains("#") {
@@ -54,7 +54,7 @@ fn main() {
 				}
 			}
 		}
-		if buffer.as_slice().contains(".q") {
+		if buffer.contains(".q") {
 			socket.write(b"QUIT\r\n");
 			socket.flush();
 			y = 0;
