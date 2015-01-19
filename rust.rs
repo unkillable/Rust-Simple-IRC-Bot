@@ -52,8 +52,6 @@ fn main() {
 			y = 0;
 		}
 		if buffer.contains(".rust") {
-			let mut chan = buffer.split_str(".rust").nth(1).unwrap();
-			println!("Channel found");
 			let r = format!("PRIVMSG {} :I am a bot made in Rust.\r\n", channel);
 			socket.write(r.as_bytes());
 			socket.flush();
