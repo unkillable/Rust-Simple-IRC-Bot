@@ -16,7 +16,7 @@ fn main() {
 	while(y == 1) {
 		let buffer = socket.read_line().unwrap();
 		println!("{}", buffer.trim());
-		if buffer.as_slice().contains("396") {
+		if buffer.contains("396") {
 			socket.write(join_packet.as_bytes());
 			socket.flush();
 			println!("Sent join packet");
