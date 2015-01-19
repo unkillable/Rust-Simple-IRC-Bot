@@ -16,43 +16,35 @@ fn main() {
 	while(y == 1) {
 		let buffer = socket.read_line().unwrap();
 		println!("{}", buffer.trim());
+		if buffer.contains("PRIVMSG ") {
+			let mut data = buffer.split_str("PRIVMSG ").nth(1).unwrap();
+			let chan = data.split_str(" :").nth(0).unwrap().trim();
+			channel = chan;
+		}
 		if buffer.contains("396") {
 			socket.write(join_packet.as_bytes());
 			socket.flush();
 			println!("Sent join packet");
 		}
 		if buffer.contains("PING ") {
-			let mut hashbit = buffer.split_str("PING ");
-			for s in hashbit{
-				if s.contains(":") {
-					let pong = format!("PONG {}\r\n", s);
-					socket.write(pong.as_bytes());
-					socket.flush();
-					println!("Sent PONG");
-				}
-				println!("{}", s);
-			}
+			let mut hashbit = buffer.split_str("PING ").nth(1).unwrap();
+			let pong = format!("PONG {}\r\n", hashbit);
+			socket.write(pong.as_bytes());
+			socket.flush();
+			println!("Sent PONG");
 		}
 		if buffer.contains(".j ") {
-			let mut chan = buffer.split_str(".j ");
-			for s in chan{
-				if s.contains("#"){
-					let j = format!("JOIN {}\r\n", s);
-					socket.write(j.as_bytes());
-					println!("Sent join channel");
-				}
-			}
+			let mut chan = buffer.split_str(".j ").nth(1).unwrap();
+			let j = format!("JOIN {}\r\n", chan);
+			socket.write(j.as_bytes());
+			println!("Sent join channel");
 		}
 		if buffer.contains(".p ") {
-			let mut chan = buffer.split_str(".p ");
-			for s in chan{
-				if s.contains("#") {
-					let p = format!("PART {}\r\n", s);
-					socket.write(p.as_bytes());
-					socket.flush();
-					println!("Sent PART channel");
-				}
-			}
+			let mut chan = buffer.split_str(".p ").nth(1).unwrap();
+			let p = format!("PART {}\r\n", chan);
+			socket.write(p.as_bytes());
+			socket.flush();
+			println!("Sent PART channel");
 		}
 		if buffer.contains(".q") {
 			socket.write(b"QUIT\r\n");
@@ -60,15 +52,11 @@ fn main() {
 			y = 0;
 		}
 		if buffer.contains(".rust") {
-			let mut chan = buffer.split_str(".rust ");
-			for s in chan {
-				if s.contains("#") {
-					println!("Channel found");
-					let r = format!("PRIVMSG {} :I am a bot made in Rust.\r\n", s.trim());
-					socket.write(r.as_bytes());
-					socket.flush();
-				}
-			}
+			let mut chan = buffer.split_str(".rust").nth(1).unwrap();
+			println!("Channel found");
+			let r = format!("PRIVMSG {} :I am a bot made in Rust.\r\n", channel);
+			socket.write(r.as_bytes());
+			socket.flush();
 		}
 	}
 }
